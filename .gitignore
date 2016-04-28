@@ -1,0 +1,2 @@
+.vagrant
+puppet/environments/production/modules/[^.]*
