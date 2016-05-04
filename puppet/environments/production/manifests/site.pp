@@ -40,7 +40,6 @@ exec { 'Install DotNet 4.5':
   [
     'DISPLAY=:0.0',
     'WINEDLLOVERRIDES=mscoree,mshtml=',
-    'WINEPREFIX=/var/tmp',
   ],
   command     => "${winetricks_dst} -q dotnet20",
   require     =>
@@ -51,8 +50,13 @@ exec { 'Install DotNet 4.5':
   ],
   logoutput   => true,
   timeout     => 0,
-  #unless      => "${winetricks_dst} | grep -q dotnet20",
-  unless      => "/bin/true",
+  unless      => "${winetricks_dst} | grep -q dotnet20",
+}
+->
+file { 'root wine':
+  ensure => 'link',
+  path   => '/root/.wine',
+  target => '/.wine',
 }
 ->
 exec { 'Install wine-mono':
@@ -60,14 +64,13 @@ exec { 'Install wine-mono':
   [
     'DISPLAY=:0.0',
     'WINEDLLOVERRIDES=mscoree,mshtml=',
-    'WINEPREFIX=/var/tmp',
   ],
   require     =>
   [
     Staging::File['wine-mono'],
     Class['display::xvfb'],
   ],
-  command     => "/usr/bin/msiexec /i /p ${wine_mono_dst}",
+  command     => "/usr/bin/msiexec /i ${wine_mono_dst}",
   logoutput   => true,
   timeout     => 0,
 }
