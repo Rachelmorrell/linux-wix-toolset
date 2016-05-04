@@ -74,32 +74,19 @@ exec { 'Install wine-mono':
   logoutput   => true,
   timeout     => 0,
 }
-# exec { 'Install wine-gecko':
-
-#   environment =>
-
-#   [
-
-#     'DISPLAY=:0.0',
-
-#     'WINEDLLOVERRIDES=mscoree,mshtml=',
-
-#   ],
-
-#   require     =>
-
-#   [
-
-#     Staging::File['wine-gecko'],
-
-#     Class['display::xvfb'],
-
-#   ],
-
-# command     => "/usr/bin/msiexec /i /p ${wine_gecko_dst}",
-
-#   logoutput   => true,
-
-#   timeout     => 0,
-
-# }
+->
+exec { 'Install wine-gecko':
+  environment =>
+  [
+    'DISPLAY=:0.0',
+    'WINEDLLOVERRIDES=mscoree,mshtml=',
+  ],
+  require     =>
+  [
+    Staging::File['wine-gecko'],
+    Class['display::xvfb'],
+  ],
+  command     => "/usr/bin/msiexec /i ${wine_gecko_dst}",
+  logoutput   => true,
+  timeout     => 0,
+}
